@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  movimientos Movimiento[]
+  maestros   Maestro[]
+}
+
+model Maestro {
+  id         String       @id @default(uuid())
+  nombre     String
+  saldo      Int
+  creadoPor  User         @relation(fields: [creadoPorId], references: [id])
+  creadoPorId String
+  movimientos Movimiento[]
+}
+
+model Movimiento {
+  id          String   @id @default(uuid())
+  fecha       DateTime @default(now())
+  tipo        MovimientoTipo
+  cantidad    Int
+  maestro     Maestro  @relation(fields: [maestroId], references: [id])
+  maestroId   String
+  ejecutadoPor User     @relation(fields: [userId], references: [id])
+  userId      String
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum MovimientoTipo {
+  ENTRADA
+  SALIDA
+}
