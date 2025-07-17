@@ -1,39 +1,64 @@
-'use client'
+// app/components/Sidebar.tsx (CON LOGS DE DEPURACIÓN)
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import Link from "next/link";
+import LogoutButton from "./LogoutButton";
 
-import Link from 'next/link'
-import { useSession } from '@supabase/auth-helpers-react'
+export default async function Sidebar() {
+  console.log("--- RENDERIZANDO SIDEBAR ---");
+  const supabase = createClient();
 
-const Sidebar = () => {
-  const session = useSession()
-  const user = session?.user
-  const role = session?.user?.user_metadata?.role || 'USER'
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+  if (authError) {
+    console.error("Error en supabase.auth.getUser():", authError.message);
+    return <div>Error de autenticación. Revisa la consola del servidor.</div>;
+  }
+  
+  if (!user) {
+    console.log("No hay usuario, redirigiendo a /login");
+    redirect("/login");
+  }
+
+  console.log("Usuario autenticado encontrado:", user.email);
+
+  const { data: userData, error: profileError } = await supabase
+    .from("User")
+    .select("email, role")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError) {
+    console.error("Error al obtener el perfil de la tabla 'User':", profileError.message);
+    // Este podría ser el error: el usuario existe en 'auth' pero no en 'public.User'
+    return <div>Error al cargar perfil. Revisa la consola del servidor.</div>
+  }
+  
+  if (!userData) {
+    console.error("El perfil del usuario no fue encontrado en la tabla 'User' para el ID:", user.id);
+    return <div>Perfil de usuario no encontrado.</div>
+  }
+
+  console.log("Perfil de usuario cargado:", userData);
 
   return (
-    <aside className="bg-gray-800 text-white w-64 min-h-screen p-4 fixed">
+    <aside className="w-64 bg-gray-800 text-white p-4 flex flex-col h-screen">
       <div className="mb-8">
-        <div className="flex items-center gap-2">
-          <img
-            src={user?.user_metadata?.avatar_url || '/default-avatar.png'}
-            alt="avatar"
-            className="w-10 h-10 rounded-full"
-          />
-          <div>
-            <p className="font-semibold">{user?.user_metadata?.name || 'Usuario'}</p>
-            <p className="text-sm text-gray-400">{role}</p>
-          </div>
-        </div>
+        <div className="w-16 h-16 rounded-full bg-gray-500 mb-2 mx-auto"></div>
+        <p className="text-center font-bold">{userData.email}</p>
       </div>
 
-      <nav className="flex flex-col gap-2">
-        <Link href="/dashboard/transacciones" className="hover:text-yellow-300">Transacciones</Link>
-        <Link href="/dashboard/maestros" className="hover:text-yellow-300">Maestros</Link>
-
-        {role === 'ADMIN' && (
-          <Link href="/dashboard/usuarios" className="hover:text-yellow-300">Usuarios</Link>
-        )}
+      <nav className="flex-grow">
+        <ul>
+          <li className="mb-2"><Link href="/transacciones" className="block p-2 rounded hover:bg-gray-700">Transacciones</Link></li>
+          <li className="mb-2"><Link href="/maestros" className="block p-2 rounded hover:bg-gray-700">Maestros</Link></li>
+          {userData.role === 'ADMIN' && (
+            <li className="mb-2"><Link href="/usuarios" className="block p-2 rounded hover:bg-gray-700">Usuarios</Link></li>
+          )}
+        </ul>
       </nav>
-    </aside>
-  )
-}
 
-export default Sidebar
+      <div><LogoutButton /></div>
+    </aside>
+  );
+}
