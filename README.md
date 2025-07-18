@@ -1,3 +1,22 @@
+# monitor-system-os
+
+![GitHub repo size](https://img.shields.io/github/repo-size/jonathand77/monitor-system-os)
+![GitHub contributors](https://img.shields.io/github/contributors/jonathand77/monitor-system-os)
+![GitHub last commit](https://img.shields.io/github/last-commit/jonathand77/monitor-system-os)
+![License](https://img.shields.io/badge/license-BSD%202--Clause-blue)
+![Languages](https://img.shields.io/github/languages/count/jonathand77/monitor-system-os)
+
+## 👥 Integrantes
+
+| 👨‍💻 Nombre | 📧 Correo | 🐙 Usuario GitHub |
+|---|---|---|
+| **Jonathan David Fernandez Vargas** | jonathand.fernandez@udea.edu.co | [jonathand77](https://github.com/jonathand77) |
+| **Valeria Alvarez Fernandez** | valeria.alvarezf@udea.edu.co | [vaf88](https://github.com/vaf88) |
+| **Valentina Cadena Zapata** | valentina.cadenaz@udea.edu.co | [ValentinaCadena](https://github.com/ValentinaCadena) |
+
+---
+
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
 
 ## Getting Started
