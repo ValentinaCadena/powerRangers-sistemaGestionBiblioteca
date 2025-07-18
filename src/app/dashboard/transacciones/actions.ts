@@ -1,22 +1,24 @@
 // app/transacciones/actions.ts (CORREGIDO)
-'use server'
+"use server";
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 // Importamos Prisma y PrismaClient
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 interface MovementData {
   maestroId: string;
-  tipo: 'ENTRADA' | 'SALIDA';
+  tipo: "ENTRADA" | "SALIDA";
   cantidad: number;
 }
 
 export async function createMovementAction(data: MovementData) {
-  const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   if (!user) {
     return { error: "No autorizado" };
@@ -33,10 +35,10 @@ export async function createMovementAction(data: MovementData) {
     // Le aplicamos el tipo a 'tx'
     await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 1. Opcional pero recomendado: Verificar que el saldo no quede negativo
-      if (tipo === 'SALIDA') {
+      if (tipo === "SALIDA") {
         const maestro = await tx.maestro.findUnique({
           where: { id: maestroId },
-          select: { saldo: true }
+          select: { saldo: true },
         });
 
         if (!maestro || maestro.saldo < cantidad) {
@@ -44,7 +46,7 @@ export async function createMovementAction(data: MovementData) {
           throw new Error("Saldo insuficiente para realizar la salida.");
         }
       }
-      
+
       // 2. Crear el movimiento
       await tx.movimiento.create({
         data: {
@@ -56,7 +58,7 @@ export async function createMovementAction(data: MovementData) {
       });
 
       // 3. Actualizar el saldo del maestro
-      const amountToUpdate = tipo === 'ENTRADA' ? cantidad : -cantidad;
+      const amountToUpdate = tipo === "ENTRADA" ? cantidad : -cantidad;
       await tx.maestro.update({
         where: { id: maestroId },
         data: {
@@ -71,10 +73,12 @@ export async function createMovementAction(data: MovementData) {
     revalidatePath("/maestros");
 
     return { success: true };
-
   } catch (error: any) {
     console.error("Transaction failed:", error);
     // Devolvemos el mensaje específico del error si lo lanzamos nosotros
-    return { error: error.message || "La operación falló. El saldo no fue actualizado." };
+    return {
+      error:
+        error.message || "La operación falló. El saldo no fue actualizado.",
+    };
   }
 }

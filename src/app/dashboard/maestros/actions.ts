@@ -1,21 +1,27 @@
 // app/maestros/actions.ts
-'use server'
+"use server";
 
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 
 export async function createMasterAction(nombre: string, saldoInicial: number) {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // 1. Obtener la sesión del usuario para saber quién está creando el maestro
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     return { error: "No autorizado: Debes iniciar sesión." };
   }
 
   // Opcional: Podrías volver a verificar si el rol es ADMIN para seguridad adicional en el backend
-  const { data: userData } = await supabase.from('User').select('role').eq('id', user.id).single();
-  if (userData?.role !== 'ADMIN') {
+  const { data: userData } = await supabase
+    .from("User")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+  if (userData?.role !== "ADMIN") {
     return { error: "Acción no permitida." };
   }
 

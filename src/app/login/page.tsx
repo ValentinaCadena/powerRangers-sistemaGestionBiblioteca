@@ -1,13 +1,25 @@
 // app/login/page.tsx
-'use client'
+"use client";
 
-import { Auth } from '@supabase/auth-ui-react'
-import { ThemeSupa } from '@supabase/auth-ui-shared'
-import { createClient } from '@/lib/supabase/client'
-// Ya no necesitas useEffect ni useRouter aquí
+import { Auth } from "@supabase/auth-ui-react";
+import { ThemeSupa } from "@supabase/auth-ui-shared";
+import { createClient } from "@/lib/supabase/client";
+import { redirect } from "next/navigation";
 
 export default function LoginPage() {
-  const supabase = createClient()
+  const supabase = createClient();
+
+  supabase.auth.getUser().then(({ data: { user } }) => {
+    if (user) {
+      redirect("/");
+    }
+  });
+
+  supabase.auth.onAuthStateChange((event, session) => {
+    if (event === "SIGNED_IN" && session?.user) {
+      redirect("/dashboard/transacciones");
+    }
+  });
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
@@ -17,10 +29,9 @@ export default function LoginPage() {
           supabaseClient={supabase}
           appearance={{ theme: ThemeSupa }}
           theme="dark"
-          providers={['google', 'github']}
-          redirectTo={`${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`}
+          providers={["google", "github"]}
         />
       </div>
     </div>
-  )
+  );
 }

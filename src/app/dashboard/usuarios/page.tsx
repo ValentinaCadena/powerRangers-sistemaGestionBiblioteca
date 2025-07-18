@@ -5,10 +5,12 @@ import UsersClient from "../usuarios/UsersClient";
 import { UserProfile } from "@/lib/types";
 
 export default async function UsuariosPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // 1. Obtener el usuario actual
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     redirect("/login");
   }
@@ -21,7 +23,7 @@ export default async function UsuariosPage() {
     .single();
 
   // Si el perfil no existe o el rol no es ADMIN, se redirige al dashboard principal.
-  if (!adminProfile || adminProfile.role !== 'ADMIN') {
+  if (!adminProfile || adminProfile.role !== "ADMIN") {
     redirect("/transacciones"); // O a una página de "acceso denegado"
   }
 

@@ -4,10 +4,12 @@ import { redirect } from "next/navigation";
 import TransactionsClient from "../transacciones/TransactionsClient";
 
 export default async function TransaccionesPage() {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   // 1. Proteger la ruta
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
   if (!user) {
     redirect("/login");
   }
