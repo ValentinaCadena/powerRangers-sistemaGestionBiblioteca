@@ -1,4 +1,4 @@
-# monitor-system-os
+# 📚 Sistema de Gestión Biblioteca - Power Rangers
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/jonathand77/monitor-system-os)
 ![GitHub contributors](https://img.shields.io/github/contributors/jonathand77/monitor-system-os)
@@ -6,9 +6,11 @@
 ![License](https://img.shields.io/badge/license-BSD%202--Clause-blue)
 ![Languages](https://img.shields.io/github/languages/count/jonathand77/monitor-system-os)
 
-## 👥 Integrantes
+---
 
-| 👨‍💻 Nombre | 📧 Correo | 🐙 Usuario GitHub |
+## 👥 Equipo
+
+| 👨‍💻 Nombre | 📧 Correo | 🐙 GitHub |
 |---|---|---|
 | **Jonathan David Fernandez Vargas** | jonathand.fernandez@udea.edu.co | [jonathand77](https://github.com/jonathand77) |
 | **Valeria Alvarez Fernandez** | valeria.alvarezf@udea.edu.co | [vaf88](https://github.com/vaf88) |
@@ -16,44 +18,143 @@
 
 ---
 
+## 🚀 Tecnologías Utilizadas
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+- [Next.js 14+](https://nextjs.org/) (App Router)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Supabase](https://supabase.com/) (Auth y DB)
+- [Prisma ORM](https://www.prisma.io/) (PostgreSQL)
+- [React](https://react.dev/)
+- [Recharts](https://recharts.org/) (Gráficas)
+- [Vercel](https://vercel.com/) (Despliegue)
 
-## Getting Started
+---
 
-First, run the development server:
+## 📦 Estructura del Proyecto
+
+```
+src/
+  app/                # Páginas y rutas principales
+    dashboard/        # Dashboard con módulos: transacciones, maestros, usuarios
+    login/            # Página de autenticación
+    auth/             # Callback de autenticación
+  components/         # Componentes reutilizables (Sidebar, LogoutButton)
+  lib/                # Tipos, cliente Supabase, utilidades
+  prisma/             # Esquema y migraciones de la base de datos
+  styles/             # Estilos globales
+```
+
+---
+
+## 🛠️ Instalación
+
+1. **Clona el repositorio:**
+   ```bash
+   git clone https://github.com/jonathand77/monitor-system-os.git
+   cd monitor-system-os
+   ```
+
+2. **Instala dependencias:**
+   ```bash
+   npm install
+   # o
+   yarn install
+   ```
+
+3. **Configura las variables de entorno:**
+   Crea un archivo `.env.local` en la raíz con:
+   ```
+   NEXT_PUBLIC_SUPABASE_URL=tu_url_supabase
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key
+   DATABASE_URL=postgresql://usuario:contraseña@host:puerto/db
+   ```
+
+4. **Ejecuta migraciones de Prisma:**
+   ```bash
+   npx prisma migrate dev
+   ```
+
+---
+
+## ▶️ Ejecución
 
 ```bash
 npm run dev
-# or
+# o
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## 🧩 Funcionalidades Principales
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- **Autenticación:** Google/GitHub vía Supabase.
+- **Gestión de Usuarios:** Solo admins pueden ver y editar roles.
+- **Gestión de Maestros:** Crear, listar y ver saldos.
+- **Transacciones:** Registrar entradas/salidas y ver historial con gráficas.
+- **Sidebar Dinámico:** Opciones según rol (ADMIN/USER).
+- **Logout seguro.**
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 👤 Ejemplo de Usuario y Admin para Pruebas
 
-## Learn More
+### Usuario ADMIN
+- Acceso a: Transacciones, Maestros, Usuarios.
+- Puede editar roles y crear maestros.
 
-To learn more about Next.js, take a look at the following resources:
+### Usuario NORMAL
+- Acceso a: Transacciones, Maestros.
+- No puede editar roles ni crear maestros.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+#### Para probar:
+1. Regístrate creando una cuenta y aceptando el correo de confirmación o utilizando:
+Usuario: jonathanfdez62@gmail.com
+Contraseña: 123456
+2. En la tabla `User` de la base de datos, cambia el campo `role` a `ADMIN` para tu usuario.
+3. Ingresa y verifica las opciones extra en el dashboard.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📚 Ejemplo de Uso
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. **Login:** Ingresa con Google/GitHub.
+2. **Dashboard:** Accede a transacciones y maestros.
+3. **Admin:** Si eres admin, gestiona usuarios y crea nuevos maestros.
+4. **Transacciones:** Agrega movimientos y visualiza el saldo en gráficas.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+---
+
+## 📝 Buenas Prácticas
+
+- Código tipado con TypeScript.
+- Rutas protegidas según rol.
+- Acciones seguras en el backend.
+- Componentes desacoplados y reutilizables.
+- Migraciones versionadas con Prisma.
+- Variables de entorno fuera del código fuente.
+- Estilos con Tailwind y clases utilitarias.
+- Documentación clara y actualizada.
+
+---
+
+## 📖 Recursos
+
+- [Next.js Docs](https://nextjs.org/docs)
+- [Supabase Docs](https://supabase.com/docs)
+- [Prisma Docs](https://www.prisma.io/docs)
+- [Tailwind Docs](https://tailwindcss.com/docs)
+
+---
+
+## 🚀 Despliegue
+
+Despliega fácilmente en [Vercel](https://vercel.com).
+
+---
+
+## 🏷️ Licencia
+
+BSD 2

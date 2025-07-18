@@ -14,8 +14,7 @@ export default async function TransaccionesPage() {
     redirect("/login");
   }
 
-  // 2. Obtener todos los maestros para el dropdown
-  // Solo necesitamos el id y el nombre
+  // 2. Obtener maestros para el dropdown
   const { data: maestros, error } = await supabase
     .from("Maestro")
     .select("id, nombre")
@@ -23,17 +22,25 @@ export default async function TransaccionesPage() {
 
   if (error) {
     console.error("Error fetching maestros:", error);
-    // Puedes manejar el error como prefieras
-    return <div>Error al cargar los datos.</div>;
+    return (
+      <div className="p-6 text-red-600 bg-red-100 rounded-lg shadow-md">
+        Error al cargar los datos.
+      </div>
+    );
   }
 
-  // 3. Renderizar el componente cliente, pasándole los maestros
+  // 3. Renderizar componente cliente
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Gestión de Transacciones</h1>
+    <div className="p-6 animate-fade-in">
+      <div className="flex justify-between items-center mb-8">
+        <h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">
+          Gestión de Transacciones
+        </h1>
       </div>
-      <TransactionsClient maestros={maestros || []} />
+
+      <div className="bg-white rounded-2xl shadow-lg p-4 transition-shadow duration-300 hover:shadow-2xl">
+        <TransactionsClient maestros={maestros || []} />
+      </div>
     </div>
   );
 }

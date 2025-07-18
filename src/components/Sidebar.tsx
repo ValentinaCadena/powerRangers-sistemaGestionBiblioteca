@@ -1,4 +1,4 @@
-// app/components/Sidebar.tsx (CON LOGS DE DEPURACIÓN)
+// app/components/Sidebar.tsx
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import Link from "next/link";
@@ -32,65 +32,63 @@ export default async function Sidebar() {
     .single();
 
   if (profileError) {
-    console.error(
-      "Error al obtener el perfil de la tabla 'User':",
-      profileError.message
-    );
-    // Este podría ser el error: el usuario existe en 'auth' pero no en 'public.User'
+    console.error("Error al obtener perfil:", profileError.message);
     return <div>Error al cargar perfil. Revisa la consola del servidor.</div>;
   }
 
   if (!userData) {
-    console.error(
-      "El perfil del usuario no fue encontrado en la tabla 'User' para el ID:",
-      user.id
-    );
+    console.error("Perfil no encontrado para el ID:", user.id);
     return <div>Perfil de usuario no encontrado.</div>;
   }
 
   console.log("Perfil de usuario cargado:", userData);
 
   return (
-    <aside className="w-64 bg-gray-800 text-white p-4 flex flex-col h-screen">
-      <div className="mb-8">
-        <div className="w-16 h-16 rounded-full bg-gray-500 mb-2 mx-auto"></div>
-        <p className="text-center font-bold">{userData.email}</p>
+    <aside className="w-64 bg-gray-800 text-white p-6 flex flex-col h-screen shadow-xl transition-all duration-500 ease-in-out">
+      {/* Avatar y correo */}
+      <div className="mb-10 flex flex-col items-center">
+        <div className="w-20 h-20 rounded-full bg-gray-500 mb-3 animate-pulse hover:scale-105 transition-transform duration-300 shadow-lg" />
+        <p className="text-center font-semibold text-lg">{userData.email}</p>
+        <span className="text-sm text-gray-400">{userData.role}</span>
       </div>
 
+      {/* Menú de navegación */}
       <nav className="flex-grow">
-        <ul>
-          <li className="mb-2">
+        <ul className="space-y-3">
+          <li>
             <Link
               href="/dashboard/transacciones"
-              className="block p-2 rounded hover:bg-gray-700"
+              className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300 ease-in-out hover:pl-6"
             >
-              Transacciones
+              📊 Transacciones
             </Link>
           </li>
-          <li className="mb-2">
+          <li>
             <Link
               href="/dashboard/maestros"
-              className="block p-2 rounded hover:bg-gray-700"
+              className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300 ease-in-out hover:pl-6"
             >
-              Maestros
+              📁 Maestros
             </Link>
           </li>
           {userData.role === "ADMIN" && (
-            <li className="mb-2">
+            <li>
               <Link
                 href="/dashboard/usuarios"
-                className="block p-2 rounded hover:bg-gray-700"
+                className="block px-4 py-2 rounded-lg hover:bg-gray-700 transition-all duration-300 ease-in-out hover:pl-6"
               >
-                Usuarios
+                👥 Usuarios
               </Link>
             </li>
           )}
         </ul>
       </nav>
 
-      <div>
+      {/* Botón de logout */}
+      <div className="mt-6">
         <LogoutButton />
       </div>
     </aside>
   );
 }
+
