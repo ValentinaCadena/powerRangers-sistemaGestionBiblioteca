@@ -1,0 +1,7 @@
+- Falto documentación 
+- no tengo usuario admin para poder probar
+- cuando creo una transacción el sistema aparenta quedarse pegado
+
+Gracias por el trabajo, espero que hayan aprendido
+
+Su NOTA es 4,5
