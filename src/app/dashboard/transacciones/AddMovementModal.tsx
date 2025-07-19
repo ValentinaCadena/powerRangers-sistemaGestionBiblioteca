@@ -12,10 +12,10 @@ interface ModalProps {
 }
 
 export default function AddMovementModal({ isOpen, onClose, maestroId, maestroNombre }: ModalProps) {
-    const [tipo, setTipo] = useState<'ENTRADA' | 'SALIDA'>('ENTRADA');
-    const [cantidad, setCantidad] = useState(1);
+    const [tipo, ] = useState<'ENTRADA' | 'SALIDA'>('ENTRADA');
+    const [cantidad, ] = useState(1);
     const [isLoading, setIsLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [, setError] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();

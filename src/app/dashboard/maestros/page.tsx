@@ -57,7 +57,7 @@ export default async function MaestrosPage() {
 
           {/* Cuerpo */}
           <tbody>
-            {maestros?.map((maestro: any) => (
+            {maestros?.map((maestro) => (
               <tr
                 key={maestro.id}
                 className="border-b border-gray-200 hover:bg-gray-50 transition-all duration-200"

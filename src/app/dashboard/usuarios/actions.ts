@@ -8,12 +8,12 @@ export async function updateUserRoleAction(userIdToUpdate: string, newRole: 'ADM
   const supabase = createClient();
 
   // 1. Doble verificación de seguridad: Asegurarse de que el usuario que realiza la acción es un ADMIN.
-  const { data: { user: adminUser } } = await supabase.auth.getUser();
+  const { data: { user: adminUser } } = await (await supabase).auth.getUser();
   if (!adminUser) {
     return { error: "No autorizado." };
   }
 
-  const { data: adminProfile } = await supabase
+  const { data: adminProfile } = await (await supabase)
     .from("User")
     .select("role")
     .eq("id", adminUser.id)
@@ -27,7 +27,7 @@ export async function updateUserRoleAction(userIdToUpdate: string, newRole: 'ADM
   // (Esta lógica puede ser más compleja, pero es algo a considerar en una app real)
 
   // 2. Actualizar el rol del usuario seleccionado en la base de datos.
-  const { error } = await supabase
+  const { error } = await (await supabase)
     .from("User")
     .update({ role: newRole })
     .eq("id", userIdToUpdate);

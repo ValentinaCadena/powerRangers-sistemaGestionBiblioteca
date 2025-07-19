@@ -73,12 +73,17 @@ export async function createMovementAction(data: MovementData) {
     revalidatePath("/maestros");
 
     return { success: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Transaction failed:", error);
     // Devolvemos el mensaje específico del error si lo lanzamos nosotros
+    if (error instanceof Error) {
+      return {
+        error: error.message,
+      };
+    }
+
     return {
-      error:
-        error.message || "La operación falló. El saldo no fue actualizado.",
+      error: "La operación falló. El saldo no fue actualizado.",
     };
   }
 }
