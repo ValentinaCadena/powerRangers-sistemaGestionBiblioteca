@@ -16,17 +16,17 @@ export type Maestro = {
   // La relación viene como un array desde Supabase
   creadoPor: {
     email: string | null;
-  }[] | null; 
+  }[] | null;
 };
 
-// Tipo para los movimientos (HEMOS CORREGIDO la propiedad 'ejecutadoPor')
+// Tipo para los movimientos (corregida la propiedad 'ejecutadoPor')
 export type MovimientoConUsuario = {
   id: string;
   fecha: string;
   cantidad: number;
   tipo: 'ENTRADA' | 'SALIDA';
-  // La relación viene como un array desde Supabase
+  // Esta relación es 1:1, no un array
   ejecutadoPor: {
     email: string | null;
-  }[] | null; 
+  } | null;
 };

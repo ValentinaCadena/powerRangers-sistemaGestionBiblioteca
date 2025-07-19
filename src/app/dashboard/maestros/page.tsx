@@ -1,36 +1,74 @@
-// app/maestros/page.tsx
-import { createClient } from "@/lib/supabase/server";
-import { redirect } from "next/navigation";
-import AddMasterClient from "../maestros/AddMasterClient";
+"use client";
+
+import { useEffect, useState } from "react";
+import AddMasterClient from "./AddMasterClient";
+import { createClient } from "@/lib/supabase/client";
 
 const shortId = (id: string) => id.substring(0, 8);
 
-export default async function MaestrosPage() {
-  const supabase = await createClient();
+interface Maestro {
+  id: string;
+  nombre: string;
+  saldo: number;
+  creadoPor: {
+    email: string;
+  }[];
+}
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) {
-    redirect("/login");
-  }
+const supabase = createClient();
 
-  const { data: userData } = await supabase
-    .from("User")
-    .select("role")
-    .eq("id", user.id)
-    .single();
+export default function MaestrosPage() {
+  const [maestros, setMaestros] = useState<Maestro[]>([]);
+  const [userRole, setUserRole] = useState<string | null>(null);
 
-  const { data: maestros, error } = await supabase.from("Maestro").select(`
-    id,
-    nombre,
-    saldo,
-    creadoPor:User ( email )
-  `);
+  useEffect(() => {
+    const fetchMaestros = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
-  if (error) {
-    console.error("Error fetching maestros:", error);
-  }
+      if (!user) {
+        window.location.href = "/login";
+        return;
+      }
+
+      const { data: userData } = await supabase
+        .from("User")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      setUserRole(userData?.role || null);
+
+      const { data: maestrosData, error } = await supabase.from("Maestro").select(`
+        id,
+        nombre,
+        saldo,
+        creadoPor:User ( email )
+      `);
+
+      if (!error) {
+        setMaestros(maestrosData || []);
+      } else {
+        console.error("Error fetching maestros:", error);
+      }
+    };
+
+    fetchMaestros();
+  }, []);
+
+  const handleMasterCreated = async () => {
+    const { data: updatedMaestros, error } = await supabase.from("Maestro").select(`
+      id,
+      nombre,
+      saldo,
+      creadoPor:User ( email )
+    `);
+
+    if (!error) {
+      setMaestros(updatedMaestros || []);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -39,13 +77,14 @@ export default async function MaestrosPage() {
         <h1 className="text-4xl font-extrabold text-gray-800 tracking-tight">
           Gestión de Maestros
         </h1>
-        {userData?.role === "ADMIN" && <AddMasterClient />}
+        {userRole === "ADMIN" && (
+          <AddMasterClient onMasterCreated={handleMasterCreated} />
+        )}
       </div>
 
       {/* Tabla de Maestros */}
       <div className="bg-white shadow-xl rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-2xl">
         <table className="min-w-full leading-normal">
-          {/* Encabezados */}
           <thead className="bg-gradient-to-r from-gray-200 to-gray-300 text-gray-700 uppercase text-sm font-bold tracking-wider">
             <tr>
               <th className="px-6 py-4 text-left">ID</th>
@@ -54,10 +93,8 @@ export default async function MaestrosPage() {
               <th className="px-6 py-4 text-left">Creado Por</th>
             </tr>
           </thead>
-
-          {/* Cuerpo */}
           <tbody>
-            {maestros?.map((maestro) => (
+            {maestros.map((maestro) => (
               <tr
                 key={maestro.id}
                 className="border-b border-gray-200 hover:bg-gray-50 transition-all duration-200"

@@ -3,7 +3,11 @@
 import { useState } from "react";
 import { createMasterAction } from "../maestros/actions";
 
-export default function AddMasterClient() {
+interface AddMasterClientProps {
+  onMasterCreated?: () => void;
+}
+
+export default function AddMasterClient({ onMasterCreated }: AddMasterClientProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [nombre, setNombre] = useState('');
   const [saldoInicial, setSaldoInicial] = useState(0);
@@ -12,7 +16,7 @@ export default function AddMasterClient() {
 
   const openModal = () => {
     setIsModalOpen(true);
-    setError(null); // Limpiar error previo
+    setError(null);
     setNombre('');
     setSaldoInicial(0);
   };
@@ -30,6 +34,7 @@ export default function AddMasterClient() {
       setIsModalOpen(false);
       setNombre('');
       setSaldoInicial(0);
+      if (onMasterCreated) onMasterCreated(); // 🔁 Llamar callback si existe
     }
 
     setIsLoading(false);
