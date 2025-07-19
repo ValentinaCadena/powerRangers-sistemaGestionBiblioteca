@@ -1,4 +1,6 @@
 // app/transacciones/page.tsx
+export const dynamic = "force-dynamic";
+
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import TransactionsClient from "../transacciones/TransactionsClient";
